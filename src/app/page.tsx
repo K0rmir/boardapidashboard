@@ -4,8 +4,6 @@ import "primereact/resources/themes/arya-purple/theme.css";
 import { Card } from 'primereact/card';
 import { useEffect, useState } from "react";
 import { Calendar } from 'primereact/calendar';
-import { Nullable } from "primereact/ts-helpers"; 
-import data from "@/pages/api/data";
 
 // Format date //
 const formatDate = (date: Date): string => {
@@ -16,29 +14,31 @@ const formatDate = (date: Date): string => {
 }
 
 export default function App() {
+
   // Get dates to be used in db call //
-const getDateRange = (): Date[] => {
+const getInitialDateRange = (): Date[] => {
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
 
   const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(yesterday.getDate() - 7);
+  sevenDaysAgo.setDate(yesterday.getDate() - 6);
 
-  return [sevenDaysAgo, yesterday];
+  return [yesterday, yesterday];
 }
 
-// Set date as state, default to yesterday //
-const [dateRange, setDateRange] = useState<Nullable<Date[]>>(getDateRange);
+  // Set date as state, default to yesterday by calling getDateRange function //
+  const [dateRange, setDateRange] = useState<Date[]>(getInitialDateRange());
+
 // Main state variables for stat cards //
+// vvv Set states here to be yesterdays from dates obj instead of 0
 const [totalRequests, setTotalRequests] = useState<number>(0);
 const [totalErrors, setTotalErrors] = useState<number>(0);
 const [avgResTime, setAvgResTime] = useState<number>(0);
 
-
 // Anytime date is updated, call api to call db //
 useEffect(() => {
-  if (dateRange) {
-    const formattedDateRange = dateRange.map(date => formatDate(date));
+  if (dateRange[0] && dateRange[1]) {
+    const formattedDateRange = dateRange.map(date => formatDate(date as Date));
     getData(formattedDateRange)
   }
 }, [dateRange])
@@ -55,10 +55,10 @@ async function getData(dateRange: string[]) {
     });
 
     const data = await response.json();
-    console.log("Data =", data);
+    console.log("Data front end =", data);
 
     // Call count logs function to populate dashboard with data //
-    countLogs(data)
+    countLogs(data);
 
   } catch (error) {
       console.error(error);
@@ -66,18 +66,18 @@ async function getData(dateRange: string[]) {
   }
 };
 
-// Function to count total requests, errors & res time // 
-function countLogs(data: any) {
-  let requestCount: number = 0;
-  let errorCount: number = 0;
-
-  for (const log of data) {
-    requestCount = requestCount + log.request_count;
-    errorCount = errorCount + log.error_count;
-  }
-  setTotalRequests(requestCount);
-  setTotalErrors(errorCount);
-}
+    // Function to count total requests, errors & res time // 
+    function countLogs(data: any) {
+      let requestCount: number = 0;
+      let errorCount: number = 0;
+    
+      for (const log of data) {
+        requestCount = requestCount + log.totalRequestCount;
+        errorCount = errorCount + log.totalErrorCount;
+      }
+      setTotalRequests(requestCount);
+      setTotalErrors(errorCount);
+    }
 
   return (
     <div>
@@ -92,7 +92,7 @@ function countLogs(data: any) {
           <p>0</p>
         </Card>
         <Card className="primaryStat">
-          <Calendar value={dateRange ? dateRange[0] : null} onChange={(e) => setDateRange([e.value as Date, dateRange ? dateRange[1] : new Date()])} showIcon dateFormat="yy/mm/dd"/>
+          <Calendar value={dateRange} onChange={(e) => setDateRange(e.value as Date[])} showIcon dateFormat="dd/mm/yy" selectionMode="range" readOnlyInput hideOnRangeSelection/>
         </Card>
       </Card>
 
