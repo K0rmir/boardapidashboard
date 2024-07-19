@@ -1,9 +1,30 @@
 "use client"
 
 import "primereact/resources/themes/arya-purple/theme.css";
+import ReactDOM from 'react-dom';
 import { Card } from 'primereact/card';
 import { useEffect, useState } from "react";
 import { Calendar } from 'primereact/calendar';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+
+} from 'chart.js';
+import { Bar} from "react-chartjs-2";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+);
 
 // Format date //
 const formatDate = (date: Date): string => {
@@ -23,7 +44,7 @@ const getInitialDateRange = (): Date[] => {
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(yesterday.getDate() - 6);
 
-  return [yesterday, yesterday];
+  return [sevenDaysAgo, yesterday];
 }
 
   // Set date as state, default to yesterday by calling getDateRange function //
@@ -34,6 +55,8 @@ const getInitialDateRange = (): Date[] => {
 const [totalRequests, setTotalRequests] = useState<number>(0);
 const [totalErrors, setTotalErrors] = useState<number>(0);
 const [avgResTime, setAvgResTime] = useState<number>(0);
+// const [chartData, setChartData] = useState<any>(null);
+const [barChartData, setBarChartData] = useState<any>(null);
 
 // Anytime date is updated, call api to call db //
 useEffect(() => {
@@ -60,6 +83,31 @@ async function getData(dateRange: string[]) {
     // Call count logs function to populate dashboard with data //
     countLogs(data);
 
+    // setChartData(data);
+
+    const transformedData = {
+      labels: data.map((item: any) => item.date), // Assuming data has a 'date' field
+      datasets: [
+        {
+          label: "Total Requests",
+          borderRadius: 30,
+          data: data.map((item: any) => item.totalRequestCount), // Assuming data has 'totalRequestCount' field
+          backgroundColor: "rgba(32, 214, 155, 1)",
+          barThickness: 10,
+        },
+        {
+          label: "Total Errors",
+          borderRadius: 20,
+          data: data.map((item: any) => item.totalErrorCount), // Assuming data has 'totalErrorCount' field
+          backgroundColor: "rgba(1, 98, 255, 1)",
+          barThickness: 10,
+        },
+      ],
+    };
+
+    setBarChartData(transformedData);
+
+
   } catch (error) {
       console.error(error);
     throw error;
@@ -79,6 +127,21 @@ async function getData(dateRange: string[]) {
       setTotalErrors(errorCount);
     }
 
+    // console.log("Chart Data = ", chartData);
+
+   const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+      },
+      title: {
+        display: true,
+        text: 'Total Requests & Errors',
+      },
+    },
+  };
+
   return (
     <div>
       <Card className="primaryStatContainer">
@@ -95,6 +158,11 @@ async function getData(dateRange: string[]) {
           <Calendar value={dateRange} onChange={(e) => setDateRange(e.value as Date[])} showIcon dateFormat="dd/mm/yy" selectionMode="range" readOnlyInput hideOnRangeSelection/>
         </Card>
       </Card>
+      <div className="requestsErrorsChartContainer">
+        {barChartData && (
+          <Bar className="requestsErrorsChart" data={barChartData} options={options} />
+          )}
+      </div>
 
     </div>
   )

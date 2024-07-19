@@ -1,3 +1,8 @@
+* {
+    box-sizing: border-box;
+}
+
+
 /* .primaryStatContainer {
     /* width: 99%; */
 /* } */
@@ -19,4 +24,16 @@
 .primaryStat p {
     margin: 0;
     font-size: 48px;
+}
+
+.requestsErrorsChartContainer {
+    width: 80%;
+    /* height: 500px; */
+    background-color: bisque;
+
+}
+
+.requestsErrorsChart {
+    /* width: 30%; */
+    /* height: fit-content; */
 }
