@@ -1,7 +1,7 @@
 "use client"
 
 import "primereact/resources/themes/arya-purple/theme.css";
-import ReactDOM from 'react-dom';
+import { ApiDateAggregate, ChartData} from '@/lib/interfaces';
 import { Card } from 'primereact/card';
 import { useEffect, useState } from "react";
 import { Calendar } from 'primereact/calendar';
@@ -47,26 +47,25 @@ const getInitialDateRange = (): Date[] => {
   return [sevenDaysAgo, yesterday];
 }
 
-  // Set date as state, default to yesterday by calling getDateRange function //
-  const [dateRange, setDateRange] = useState<Date[]>(getInitialDateRange());
+// Default to previous 7 days of data on page load //
+const [dateRange, setDateRange] = useState<Date[]>(getInitialDateRange());
 
-// Main state variables for stat cards //
-// vvv Set states here to be yesterdays from dates obj instead of 0
+// State variables for stat cards //
 const [totalRequests, setTotalRequests] = useState<number>(0);
 const [totalErrors, setTotalErrors] = useState<number>(0);
 const [avgResTime, setAvgResTime] = useState<number>(0);
-// const [chartData, setChartData] = useState<any>(null);
-const [barChartData, setBarChartData] = useState<any>(null);
+
+const [chartData, setChartData] = useState<ChartData>();
 
 // Anytime date is updated, call api to call db //
 useEffect(() => {
-  if (dateRange[0] && dateRange[1]) {
+  if (dateRange[0] && dateRange[1]) { // Ensure two dates are selected //
     const formattedDateRange = dateRange.map(date => formatDate(date as Date));
     getData(formattedDateRange)
   }
 }, [dateRange])
 
-// DB call with whatever the date is as parameter //
+// DB call with date range as parameter //
 async function getData(dateRange: string[]) {
   try {
     const response = await fetch('/api/data', {
@@ -80,33 +79,31 @@ async function getData(dateRange: string[]) {
     const data = await response.json();
     console.log("Data front end =", data);
 
-    // Call count logs function to populate dashboard with data //
+    // Call function to populate stat cards //
     countLogs(data);
 
-    // setChartData(data);
-
-    const transformedData = {
-      labels: data.map((item: any) => item.date), // Assuming data has a 'date' field
+    // Generate data for chartjs bar chart //
+    const chartDataSets: ChartData = {
+      labels: data.map((log: ApiDateAggregate) => log.date), // Generate array of labels for chart using dates.
       datasets: [
         {
           label: "Total Requests",
           borderRadius: 30,
-          data: data.map((item: any) => item.totalRequestCount), // Assuming data has 'totalRequestCount' field
+          data: data.map((log: ApiDateAggregate) => log.totalRequestCount), // Generate array of requests per day 
           backgroundColor: "rgba(32, 214, 155, 1)",
           barThickness: 10,
         },
         {
           label: "Total Errors",
           borderRadius: 20,
-          data: data.map((item: any) => item.totalErrorCount), // Assuming data has 'totalErrorCount' field
+          data: data.map((log: ApiDateAggregate) => log.totalErrorCount), // Generate array of errors per day
           backgroundColor: "rgba(1, 98, 255, 1)",
           barThickness: 10,
         },
       ],
     };
 
-    setBarChartData(transformedData);
-
+    setChartData(chartDataSets);
 
   } catch (error) {
       console.error(error);
@@ -114,8 +111,8 @@ async function getData(dateRange: string[]) {
   }
 };
 
-    // Function to count total requests, errors & res time // 
-    function countLogs(data: any) {
+    // Count total requests, errors & res time for stat cards // 
+    function countLogs(data: ApiDateAggregate[]) {
       let requestCount: number = 0;
       let errorCount: number = 0;
     
@@ -127,8 +124,7 @@ async function getData(dateRange: string[]) {
       setTotalErrors(errorCount);
     }
 
-    // console.log("Chart Data = ", chartData);
-
+  // Options obj for chartjs bar chart //
    const options = {
     responsive: true,
     plugins: {
@@ -159,8 +155,8 @@ async function getData(dateRange: string[]) {
         </Card>
       </Card>
       <div className="requestsErrorsChartContainer">
-        {barChartData && (
-          <Bar className="requestsErrorsChart" data={barChartData} options={options} />
+        {chartData && ( // Ensure chartData exists before rendering chart //
+          <Bar className="requestsErrorsChart" data={chartData} options={options} />
           )}
       </div>
 

@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { db } from "@/lib/db";
+import { ApiDateAggregate, ApiLogAggregate } from '@/lib/interfaces';
 
 export default async function data(req: NextApiRequest, res: NextApiResponse) {
 
@@ -14,46 +15,28 @@ export default async function data(req: NextApiRequest, res: NextApiResponse) {
     try {
         const data = await db.query(`SELECT * FROM api_usage_aggregate WHERE date BETWEEN $1 AND $2`, [dateRange[0], dateRange[1]]);
 
-        // Define the structure of the resulting array
-        interface DateSummary {
-            date: string;
-            totalRequestCount: number;
-            totalErrorCount: number;
-        }
+        // Initialize empty object to keep track of each dates summary //
+        const dateSummary: { [key: string]: ApiDateAggregate } = {};
 
-        // Define the structure of each entry in the db response
-        interface jsonResponse {
-            api_key: string;
-            avg_response_time_ms: number;
-            date: string | Date;
-            endpoint: string;
-            error_count: number;
-            id: number;
-            request_count: number;
-        }
+        // Process each entry in the db response //
+        data.rows.forEach((log: ApiLogAggregate) => {
+            const dateStr = typeof log.date === 'string' ? log.date : log.date.toISOString();
+            const date = dateStr.split('T')[0]; // Extract the date from the datetime string //
 
-        // Initialize an object to keep track of each date's summary
-        const dateSummaryMap: { [key: string]: DateSummary } = {};
-
-        // Process each entry in the JSON response
-        data.rows.forEach((entry: jsonResponse) => {
-            const dateStr = typeof entry.date === 'string' ? entry.date : entry.date.toISOString();
-            const date = dateStr.split('T')[0]; // Extract the date part from the datetime string
-
-            if (!dateSummaryMap[date]) {
-                dateSummaryMap[date] = {
+            if (!dateSummary[date]) {
+                dateSummary[date] = {
                     date: date,
                     totalRequestCount: 0,
                     totalErrorCount: 0
                 };
             }
 
-            dateSummaryMap[date].totalRequestCount += entry.request_count;
-            dateSummaryMap[date].totalErrorCount += entry.error_count;
+            dateSummary[date].totalRequestCount += log.request_count;
+            dateSummary[date].totalErrorCount += log.error_count;
         });
 
-        // Convert the dateSummaryMap to an array
-        const dateSummaries: DateSummary[] = Object.values(dateSummaryMap);
+        // Convert dateSummary objects to an array
+        const dateSummaries: ApiDateAggregate[] = Object.values(dateSummary);
 
         res.status(200).json(dateSummaries);
     } catch (error) {
