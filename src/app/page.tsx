@@ -47,9 +47,13 @@ const getInitialDateRange = (): Date[] => {
   return [sevenDaysAgo, yesterday];
 }
 
+// max date definition for calendar component //
+const maxDate = new Date();
+  maxDate.setDate(maxDate.getDate() - 1);
+
+
 // Default to previous 7 days of data on page load //
 const [dateRange, setDateRange] = useState<Date[]>(getInitialDateRange());
-
 // State variables for stat cards //
 const [totalRequests, setTotalRequests] = useState<number>(0);
 const [totalErrors, setTotalErrors] = useState<number>(0);
@@ -151,7 +155,7 @@ async function getData(dateRange: string[]) {
           <p>0</p>
         </Card>
         <Card className="primaryStat">
-          <Calendar value={dateRange} onChange={(e) => setDateRange(e.value as Date[])} showIcon dateFormat="dd/mm/yy" selectionMode="range" readOnlyInput hideOnRangeSelection/>
+            <Calendar value={dateRange} onChange={(e) => setDateRange(e.value as Date[])} showIcon dateFormat="dd/mm/yy" selectionMode="range" readOnlyInput hideOnRangeSelection variant="filled" maxDate={maxDate}/>
         </Card>
       </Card>
       <div className="requestsErrorsChartContainer">
