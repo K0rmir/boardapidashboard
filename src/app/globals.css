@@ -2,7 +2,6 @@
     box-sizing: border-box;
 }
 
-
 /* .primaryStatContainer {
     /* width: 99%; */
 /* } */
@@ -18,7 +17,7 @@
     margin: 0% 0.5%;
     width: 15%;
     height: 7%;
-    background-color: aqua;
+    background-color: olive;
 }
 
 .primaryStat p {

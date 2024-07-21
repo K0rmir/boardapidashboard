@@ -1,10 +1,12 @@
 "use client"
 
 import "primereact/resources/themes/arya-purple/theme.css";
-import { ApiDateAggregate, ChartData} from '@/lib/interfaces';
+import { ApiDateAggregate, ChartData, ApiEndpointAggregate} from '@/lib/interfaces';
 import { Card } from 'primereact/card';
 import { useEffect, useState } from "react";
 import { Calendar } from 'primereact/calendar';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -59,7 +61,8 @@ const [totalRequests, setTotalRequests] = useState<number>(0);
 const [totalErrors, setTotalErrors] = useState<number>(0);
 const [avgResTime, setAvgResTime] = useState<number>(0);
 
-const [chartData, setChartData] = useState<ChartData>();
+const [dailyChartData, setDailyChartData] = useState<ChartData>();
+const [endpointDataTable, setEndpointDataTable] = useState<ApiEndpointAggregate[]>();
 
 // Anytime date is updated, call api to call db //
 useEffect(() => {
@@ -84,30 +87,31 @@ async function getData(dateRange: string[]) {
     console.log("Data front end =", data);
 
     // Call function to populate stat cards //
-    countLogs(data);
+    countLogs(data[0]);
 
     // Generate data for chartjs bar chart //
-    const chartDataSets: ChartData = {
-      labels: data.map((log: ApiDateAggregate) => log.date), // Generate array of labels for chart using dates.
+    const dailyChartDataSets: ChartData = {
+      labels: data[0].map((log: ApiDateAggregate) => log.date), // Generate array of labels for chart using dates.
       datasets: [
         {
           label: "Total Requests",
           borderRadius: 30,
-          data: data.map((log: ApiDateAggregate) => log.totalRequestCount), // Generate array of requests per day 
+          data: data[0].map((log: ApiDateAggregate) => log.totalRequestCount), // Generate array of requests per day 
           backgroundColor: "rgba(32, 214, 155, 1)",
           barThickness: 10,
         },
         {
           label: "Total Errors",
           borderRadius: 20,
-          data: data.map((log: ApiDateAggregate) => log.totalErrorCount), // Generate array of errors per day
+          data: data[0].map((log: ApiDateAggregate) => log.totalErrorCount), // Generate array of errors per day
           backgroundColor: "rgba(1, 98, 255, 1)",
           barThickness: 10,
         },
       ],
     };
 
-    setChartData(chartDataSets);
+    setDailyChartData(dailyChartDataSets);
+    setEndpointDataTable(data[1]);
 
   } catch (error) {
       console.error(error);
@@ -159,11 +163,17 @@ async function getData(dateRange: string[]) {
         </Card>
       </Card>
       <div className="requestsErrorsChartContainer">
-        {chartData && ( // Ensure chartData exists before rendering chart //
-          <Bar className="requestsErrorsChart" data={chartData} options={options} />
+        {dailyChartData && ( // Ensure chartData exists before rendering chart //
+          <Bar className="requestsErrorsChart" data={dailyChartData} options={options} />
           )}
       </div>
-
+      <div className="endpointDataTableContainer">
+        <DataTable value={endpointDataTable} tableStyle={{ minWidth: '50rem' }}>
+          <Column field="endpoint" header="Endpoint"></Column>
+          <Column field="totalRequestCount" header="Total Requests"></Column>
+          <Column field="totalErrorCount" header="Total Errors"></Column>
+        </DataTable>
+      </div>
     </div>
   )
 }

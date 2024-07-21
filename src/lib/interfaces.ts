@@ -16,6 +16,13 @@ interface ApiDateAggregate {
     totalErrorCount: number;
 }
 
+// Define the structure of dates when collated //
+interface ApiEndpointAggregate {
+    endpoint: string;
+    totalRequestCount: number;
+    totalErrorCount: number;
+}
+
 // Define the structure of data for chartjs bar chart //
 interface ChartData {
     labels: string[],
@@ -31,5 +38,6 @@ interface ChartData {
 export type {
     ApiLogAggregate,
     ApiDateAggregate,
+    ApiEndpointAggregate,
     ChartData
 }
