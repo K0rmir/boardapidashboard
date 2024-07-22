@@ -2,37 +2,155 @@
     box-sizing: border-box;
 }
 
-/* .primaryStatContainer {
-    /* width: 99%; */
-/* } */
+.container {
+    display: grid;
+    grid-template-columns: 25% 75%;
+    grid-template-rows: 10% 15% 30%;
+    gap: 10px;
+    height: 100vh;
+    margin-right: 10px;
+}
 
-.p-card-content {
+.item1 {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+}
+
+.item2 {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    font-size: 3rem;
+    align-content: center;
+}
+
+/* Second row, three columns at 33.33% each */
+.container .row2 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-column: 1 / -1;
+    /* Span across the whole row */
+    gap: 10px;
+}
+
+.item3 {
+    grid-column: 1 / 2;
+}
+
+.item4 {
+    grid-column: 2 / 3;
+}
+
+.item5 {
+    grid-column: 3 / 4;
+}
+
+/* Third row, two columns at 50% each */
+.container .row3 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-column: 1 / -1;
+    /* Span across the whole row */
+    margin-top: 5px;
+    gap: 10px;
+}
+
+.item6 {
+    grid-column: 1 / 2;
+}
+
+.item7 {
+    grid-column: 2 / 3;
+}
+
+.p-card .p-card-content:nth-of-type(2),
+.p-card .p-card-content:nth-of-type(3),
+.p-card .p-card-content:nth-of-type(4) {
     display: flex;
     justify-content: center;
-    padding: 0;
+}
+
+.p-card-content p {
+    font-size: 3rem;
     margin: 0;
 }
 
-.primaryStat {
-    margin: 0% 0.5%;
-    width: 15%;
-    height: 7%;
-    background-color: olive;
+#chartTitle p {
+    display: flex;
+    justify-content: center;
+    font-size: 1.75rem;
 }
 
-.primaryStat p {
-    margin: 0;
-    font-size: 48px;
+/* Styles for Calendar Component */
+
+.p-datepicker table td span.p-highlight {
+    background-color: #CAC068;
+    color: black;
 }
 
-.requestsErrorsChartContainer {
-    width: 80%;
-    /* height: 500px; */
-    background-color: bisque;
-
+.p-datepicker-today {
+    color: green;
 }
 
-.requestsErrorsChart {
-    /* width: 30%; */
-    /* height: fit-content; */
+.p-datepicker-trigger {
+    color: black;
+    background-color: #CAC068;
+}
+
+.p-calendar:not(.p-calendar-disabled).p-focus>.p-inputtext {
+    outline: 0 none;
+    outline-offset: 0;
+    box-shadow: 0 0 0 1px #CAC068;
+    border-color: #CAC068;
+}
+
+.p-button {
+    border: 1px solid #CAC099;
+}
+
+.p-inputtext:hover {
+    border: 1px solid #CAC068;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .container {
+        grid-template-columns: 1fr;
+        /* Single column layout for smaller screens */
+        grid-template-rows: repeat(3, auto);
+        /* Auto height for each row */
+    }
+
+    .item1,
+    .item2,
+    .item3,
+    .item4,
+    .item5,
+    .item6,
+    .item7 {
+        grid-column: 1 / -1;
+        /* Each item spans the full width */
+    }
+
+    .row2,
+    .row3 {
+        grid-template-columns: 1fr;
+        /* Single column within these rows */
+    }
+}
+
+@media (min-width: 1201px) and (max-width: 1600px) {
+    .container {
+        grid-template-columns: 1fr 2fr;
+        /* Adjust columns for medium screens */
+    }
+
+    .row2 {
+        grid-template-columns: repeat(3, 1fr);
+        /* Keep three columns for row2 */
+    }
+
+    .row3 {
+        grid-template-columns: 1fr 1fr;
+        /* Keep two columns for row3 */
+    }
 }

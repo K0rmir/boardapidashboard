@@ -18,6 +18,7 @@ import {
 
 } from 'chart.js';
 import { Bar} from "react-chartjs-2";
+import { serialize } from "v8";
 
 ChartJS.register(
   CategoryScale,
@@ -97,14 +98,14 @@ async function getData(dateRange: string[]) {
           label: "Total Requests",
           borderRadius: 30,
           data: data[0].map((log: ApiDateAggregate) => log.totalRequestCount), // Generate array of requests per day 
-          backgroundColor: "rgba(32, 214, 155, 1)",
+          backgroundColor: "#CAC068",
           barThickness: 10,
         },
         {
           label: "Total Errors",
           borderRadius: 20,
           data: data[0].map((log: ApiDateAggregate) => log.totalErrorCount), // Generate array of errors per day
-          backgroundColor: "rgba(1, 98, 255, 1)",
+          backgroundColor: "#FF649D",
           barThickness: 10,
         },
       ],
@@ -138,42 +139,58 @@ async function getData(dateRange: string[]) {
     plugins: {
       legend: {
         position: 'top' as const,
+        labels: {
+          font: {
+            size: 18,
+            color: 'white'
+          },
+      },
       },
       title: {
         display: true,
-        text: 'Total Requests & Errors',
+        // text: 'Total Requests & Errors',
+        color: 'white',
       },
     },
   };
 
   return (
-    <div>
-      <Card className="primaryStatContainer">
-        <Card title="Total Requests" className="primaryStat">
-          <p>{totalRequests}</p>
-        </Card>
-        <Card title="Total Errors" className="primaryStat">
-          <p>{totalErrors}</p>
-        </Card>
-        <Card title="Avg Response Time" className="primaryStat">
-          <p>0</p>
-        </Card>
-        <Card className="primaryStat">
-            <Calendar value={dateRange} onChange={(e) => setDateRange(e.value as Date[])} showIcon dateFormat="dd/mm/yy" selectionMode="range" readOnlyInput hideOnRangeSelection variant="filled" maxDate={maxDate}/>
-        </Card>
-      </Card>
-      <div className="requestsErrorsChartContainer">
-        {dailyChartData && ( // Ensure chartData exists before rendering chart //
-          <Bar className="requestsErrorsChart" data={dailyChartData} options={options} />
-          )}
-      </div>
-      <div className="endpointDataTableContainer">
-        <DataTable value={endpointDataTable} tableStyle={{ minWidth: '50rem' }}>
-          <Column field="endpoint" header="Endpoint"></Column>
-          <Column field="totalRequestCount" header="Total Requests"></Column>
-          <Column field="totalErrorCount" header="Total Errors"></Column>
-        </DataTable>
-      </div>
-    </div>
+<div className="container">
+  <Card className="primaryStat item1">
+    <Calendar value={dateRange} onChange={(e) => setDateRange(e.value as Date[])} showIcon dateFormat="dd/mm/yy" selectionMode="range" readOnlyInput hideOnRangeSelection variant="filled" maxDate={maxDate}/>
+  </Card>
+  <div className="item2">boardapi dashboard</div>
+
+  <div className="row2">
+    <Card title="Total Requests" className="primaryStat item3">
+      <p>{totalRequests}</p>
+    </Card>
+    <Card title="Total Errors" className="primaryStat item4">
+      <p>{totalErrors}</p>
+    </Card>
+    <Card title="Avg Response Time" className="primaryStat item5">
+      <p>0</p>
+    </Card>
+  </div>
+
+  <div className="row3">
+    <Card className="item6" id="chartTitle">
+      <p>Total Requests & Errors By Day</p>
+      {dailyChartData && (
+        <Bar className="requestsErrorsChart" data={dailyChartData} options={options} />
+      )}
+    </Card>
+    <Card className="item7" id="chartTitle">
+      <p>Endpoint Usage</p>
+      <DataTable value={endpointDataTable} tableStyle={{ minWidth: '50rem' }}>
+        <Column field="endpoint" header="Endpoint"></Column>
+        <Column field="totalRequestCount" header="Total Requests"></Column>
+        <Column field="totalErrorCount" header="Total Errors"></Column>
+      </DataTable>
+    </Card>
+  </div>
+</div>
+
+
   )
 }
