@@ -18,7 +18,6 @@ import {
 
 } from 'chart.js';
 import { Bar} from "react-chartjs-2";
-import { serialize } from "v8";
 
 ChartJS.register(
   CategoryScale,
@@ -85,14 +84,13 @@ async function getData(dateRange: string[]) {
     });
 
     const data = await response.json();
-    console.log("Data front end =", data);
 
     // Call function to populate stat cards //
     countLogs(data[0]);
 
     // Generate data for chartjs bar chart //
     const dailyChartDataSets: ChartData = {
-      labels: data[0].map((log: ApiDateAggregate) => log.date), // Generate array of labels for chart using dates.
+      labels: data[0].map((log: ApiDateAggregate) => new Date(log.date).toLocaleDateString()), // Generate array of labels for chart using dates.
       datasets: [
         {
           label: "Total Requests",

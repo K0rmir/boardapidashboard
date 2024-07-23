@@ -20,6 +20,7 @@ export default async function data(req: NextApiRequest, res: NextApiResponse) {
 
         // Process each date in the db response //
         data.rows.forEach((log: ApiLogAggregate) => {
+
             const dateStr = typeof log.date === 'string' ? log.date : log.date.toISOString();
             const date = dateStr.split('T')[0]; // Extract the date from the datetime string //
 
