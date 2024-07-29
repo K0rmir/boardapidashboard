@@ -18,6 +18,8 @@ import {
 
 } from 'chart.js';
 import { Bar} from "react-chartjs-2";
+import { Button } from 'primereact/button';
+        
 
 ChartJS.register(
   CategoryScale,
@@ -38,36 +40,65 @@ const formatDate = (date: Date): string => {
 
 export default function App() {
 
-  // Get dates to be used in db call //
-const getInitialDateRange = (): Date[] => {
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
+// Preselected date function buttons //
+const yesterday = new Date();
+yesterday.setDate(yesterday.getDate() - 1);
 
-  const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(yesterday.getDate() - 6);
+const sevenDaysAgo = (): Date[] => {
+  const sevenDays = new Date();
+  sevenDays.setDate(yesterday.getDate() - 6)
+  return [sevenDays, yesterday];
+}
 
-  return [sevenDaysAgo, yesterday];
+const fourteenDaysAgo = (): Date[] => {
+  const fourteenDays = new Date();
+  fourteenDays.setDate(yesterday.getDate() - 13);
+  return [fourteenDays, yesterday];
+}
+
+const thirtyDaysAgo = (): Date[] => {
+  const thirtyDays = new Date();
+  thirtyDays.setDate(yesterday.getDate() - 29);
+  return [thirtyDays, yesterday];
 }
 
 // max date definition for calendar component //
 const maxDate = new Date();
   maxDate.setDate(maxDate.getDate() - 1);
 
-
 // Default to previous 7 days of data on page load //
-const [dateRange, setDateRange] = useState<Date[]>(getInitialDateRange());
+const [dateRange, setDateRange] = useState<Date[]>(sevenDaysAgo);
 // State variables for stat cards //
 const [totalRequests, setTotalRequests] = useState<number>(0);
 const [totalErrors, setTotalErrors] = useState<number>(0);
 const [avgResTime, setAvgResTime] = useState<number>(0);
-
 const [dailyChartData, setDailyChartData] = useState<ChartData>();
 const [endpointDataTable, setEndpointDataTable] = useState<ApiEndpointAggregate[]>();
+const [dateSelector, setDateSelector] = useState<string>("7d");
+
+// Handle state changes from preselected date buttons //
+function handleDateChange(preselectedDate: string) {
+  switch(preselectedDate) {
+    case "7d":
+      setDateSelector("7d");
+      setDateRange(sevenDaysAgo)
+      break;
+    case "14d":
+      setDateSelector("14d");
+      setDateRange(fourteenDaysAgo);
+      break;
+    case "30d":
+      setDateSelector("30d");
+      setDateRange(thirtyDaysAgo);
+      break;
+  }
+};
 
 // Anytime date is updated, call api to call db //
 useEffect(() => {
   if (dateRange[0] && dateRange[1]) { // Ensure two dates are selected //
     const formattedDateRange = dateRange.map(date => formatDate(date as Date));
+    console.log(dateSelector);
     getData(formattedDateRange)
   }
 }, [dateRange])
@@ -156,6 +187,10 @@ async function getData(dateRange: string[]) {
 <div className="container">
   <Card className="primaryStat item1">
     <Calendar value={dateRange} onChange={(e) => setDateRange(e.value as Date[])} showIcon dateFormat="dd/mm/yy" selectionMode="range" readOnlyInput hideOnRangeSelection variant="filled" maxDate={maxDate}/>
+    <Button raised rounded onClick={() => handleDateChange("7d")} className={`dateBtn ${dateSelector === "7d" ? "selected" : ""}`}>7d</Button>
+    <Button raised rounded onClick={() => handleDateChange("14d")} className={`dateBtn ${dateSelector === "14d" ? "selected" : ""}`}>14d</Button>
+    <Button raised rounded onClick={() => handleDateChange("30d")} className={`dateBtn ${dateSelector === "30d" ? "selected" : ""}`}>30d</Button>
+
   </Card>
   <div className="item2">boardapi dashboard</div>
 

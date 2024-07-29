@@ -111,6 +111,20 @@
     border: 1px solid #CAC068;
 }
 
+/* Styles for pre-selected Date buttons */
+
+.dateBtn {
+    background-color: black;
+    border: 1px solid white;
+    margin-left: 20px;
+}
+
+.dateBtn.selected {
+    background-color: #CAC068;
+    border: 2px solid black;
+    color: black;
+}
+
 /* Responsive adjustments */
 @media (max-width: 1200px) {
     .container {
