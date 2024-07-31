@@ -7,6 +7,11 @@ interface ApiLogAggregate {
     error_count: number;
     id: number;
     request_count: number;
+    query_params: string[]
+}
+
+interface QueryParamCount {
+    [key: string]: number
 }
 
 // Define the structure of dates when collated //
@@ -21,6 +26,7 @@ interface ApiEndpointAggregate {
     endpoint: string;
     totalRequestCount: number;
     totalErrorCount: number;
+    queryParams: QueryParamCount;
 }
 
 // Define the structure of data for chartjs bar chart //

@@ -10,10 +10,12 @@ export default async function data(req: NextApiRequest, res: NextApiResponse) {
 
     const { dateRange } = req.body;
 
-    console.log("Date Range in DB Call is:", dateRange)
+    // console.log("Date Range in DB Call is:", dateRange)
 
     try {
         const data = await db.query(`SELECT * FROM api_usage_aggregate WHERE date BETWEEN $1 AND $2`, [dateRange[0], dateRange[1]]);
+
+        console.log("data =", data.rows);
 
         // Initialize empty object to keep track of each dates summary //
         const dateSummary: { [key: string]: ApiDateAggregate } = {};
@@ -41,21 +43,37 @@ export default async function data(req: NextApiRequest, res: NextApiResponse) {
         // Process each endpoint in the db response //
         data.rows.forEach((log: ApiLogAggregate) => {
             const endpoint: string = log.endpoint;
+            const queryParams: string[] | null = log.query_params;
 
             if (!endpointSummary[endpoint]) {
                 endpointSummary[endpoint] = {
                     endpoint: endpoint,
                     totalRequestCount: 0,
-                    totalErrorCount: 0
+                    totalErrorCount: 0,
+                    queryParams: {}
                 };
             }
+
             endpointSummary[endpoint].totalRequestCount += log.request_count;
             endpointSummary[endpoint].totalErrorCount += log.error_count;
+
+            // Count each query param and how many times it was used //
+            // Can take this a step further and also include error counts for each param used //
+            queryParams.forEach(param => {
+                if (!endpointSummary[endpoint].queryParams[param]) {
+                    endpointSummary[endpoint].queryParams[param] = 0
+                };
+                endpointSummary[endpoint].queryParams[param] = log.request_count;
+            })
         });
+
+
 
         // Convert dateSummary & endpointSummary objects to an array
         const dateSummaries: ApiDateAggregate[] = Object.values(dateSummary);
         const endpointSummaries: ApiEndpointAggregate[] = Object.values(endpointSummary);
+
+        console.log("End point summaries", endpointSummaries)
 
         // Return both arrays in an array for front end visualisation //
         const apiLogSummaries = [dateSummaries, endpointSummaries];

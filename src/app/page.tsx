@@ -5,7 +5,7 @@ import { ApiDateAggregate, ChartData, ApiEndpointAggregate} from '@/lib/interfac
 import { Card } from 'primereact/card';
 import { useEffect, useState } from "react";
 import { Calendar } from 'primereact/calendar';
-import { DataTable } from 'primereact/datatable';
+import { DataTable, DataTableExpandedRows, DataTableRowEvent, DataTableValueArray } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import {
   Chart as ChartJS,
@@ -76,6 +76,9 @@ const [dailyChartData, setDailyChartData] = useState<ChartData>();
 const [endpointDataTable, setEndpointDataTable] = useState<ApiEndpointAggregate[]>();
 const [dateSelector, setDateSelector] = useState<string>("7d");
 
+// State for expanded rows //
+const [expandedRows, setExpandedRows] = useState<DataTableExpandedRows | DataTableValueArray | undefined>(undefined);
+
 // Handle state changes from preselected date buttons //
 function handleDateChange(preselectedDate: string) {
   switch(preselectedDate) {
@@ -98,7 +101,6 @@ function handleDateChange(preselectedDate: string) {
 useEffect(() => {
   if (dateRange[0] && dateRange[1]) { // Ensure two dates are selected //
     const formattedDateRange = dateRange.map(date => formatDate(date as Date));
-    console.log(dateSelector);
     getData(formattedDateRange)
   }
 }, [dateRange])
@@ -186,7 +188,7 @@ async function getData(dateRange: string[]) {
   return (
 <div className="container">
   <Card className="primaryStat item1">
-    <Calendar value={dateRange} onChange={(e) => setDateRange(e.value as Date[])} showIcon dateFormat="dd/mm/yy" selectionMode="range" readOnlyInput hideOnRangeSelection variant="filled" maxDate={maxDate}/>
+    <Calendar value={dateRange} onChange={(e) => setDateRange(e.value as Date[])} showIcon dateFormat="dd/mm/yy" selectionMode="range" readOnlyInput hideOnRangeSelection variant="filled" />
     <Button raised rounded onClick={() => handleDateChange("7d")} className={`dateBtn ${dateSelector === "7d" ? "selected" : ""}`}>7d</Button>
     <Button raised rounded onClick={() => handleDateChange("14d")} className={`dateBtn ${dateSelector === "14d" ? "selected" : ""}`}>14d</Button>
     <Button raised rounded onClick={() => handleDateChange("30d")} className={`dateBtn ${dateSelector === "30d" ? "selected" : ""}`}>30d</Button>
