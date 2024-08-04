@@ -19,6 +19,7 @@ import {
 } from 'chart.js';
 import { Bar} from "react-chartjs-2";
 import { Button } from 'primereact/button';
+import data from "@/pages/api/data";
         
 
 ChartJS.register(
@@ -185,10 +186,22 @@ async function getData(dateRange: string[]) {
     },
   };
 
+  const rowExpansionTemplate = (data: ApiEndpointAggregate) => {
+    const queryParamsArray = Object.entries(data.queryParams).map(([param, count]) => ({ param, count }));
+    return (
+      <div>
+        <DataTable value={queryParamsArray}>
+          <Column field="param" header="Query Param"/>
+          <Column field="count" header="Response Count"/>
+        </DataTable>
+      </div>
+    )
+  }
+
   return (
 <div className="container">
   <Card className="primaryStat item1">
-    <Calendar value={dateRange} onChange={(e) => setDateRange(e.value as Date[])} showIcon dateFormat="dd/mm/yy" selectionMode="range" readOnlyInput hideOnRangeSelection variant="filled" />
+    <Calendar value={dateRange} onChange={(e) => setDateRange(e.value as Date[])} showIcon dateFormat="dd/mm/yy" selectionMode="range" readOnlyInput hideOnRangeSelection variant="filled" maxDate={maxDate} />
     <Button raised rounded onClick={() => handleDateChange("7d")} className={`dateBtn ${dateSelector === "7d" ? "selected" : ""}`}>7d</Button>
     <Button raised rounded onClick={() => handleDateChange("14d")} className={`dateBtn ${dateSelector === "14d" ? "selected" : ""}`}>14d</Button>
     <Button raised rounded onClick={() => handleDateChange("30d")} className={`dateBtn ${dateSelector === "30d" ? "selected" : ""}`}>30d</Button>
@@ -217,7 +230,8 @@ async function getData(dateRange: string[]) {
     </Card>
     <Card className="item7" id="chartTitle">
       <p>Endpoint Usage</p>
-      <DataTable value={endpointDataTable} tableStyle={{ minWidth: '50rem' }}>
+      <DataTable value={endpointDataTable} expandedRows={expandedRows} onRowToggle={(e) => setExpandedRows(e.data)} rowExpansionTemplate={rowExpansionTemplate} dataKey="endpoint" tableStyle={{ minWidth: '50rem' }}>
+        <Column expander={true} style={{ width: '3em' }} />
         <Column field="endpoint" header="Endpoint"></Column>
         <Column field="totalRequestCount" header="Total Requests"></Column>
         <Column field="totalErrorCount" header="Total Errors"></Column>

@@ -10,19 +10,14 @@ export default async function data(req: NextApiRequest, res: NextApiResponse) {
 
     const { dateRange } = req.body;
 
-    // console.log("Date Range in DB Call is:", dateRange)
-
     try {
         const data = await db.query(`SELECT * FROM api_usage_aggregate WHERE date BETWEEN $1 AND $2`, [dateRange[0], dateRange[1]]);
-
-        console.log("data =", data.rows);
 
         // Initialize empty object to keep track of each dates summary //
         const dateSummary: { [key: string]: ApiDateAggregate } = {};
 
         // Process each date in the db response //
         data.rows.forEach((log: ApiLogAggregate) => {
-
             const dateStr = typeof log.date === 'string' ? log.date : log.date.toISOString();
             const date = dateStr.split('T')[0]; // Extract the date from the datetime string //
 
@@ -61,19 +56,15 @@ export default async function data(req: NextApiRequest, res: NextApiResponse) {
             // Can take this a step further and also include error counts for each param used //
             queryParams.forEach(param => {
                 if (!endpointSummary[endpoint].queryParams[param]) {
-                    endpointSummary[endpoint].queryParams[param] = 0
+                    endpointSummary[endpoint].queryParams[param] = 0;
                 };
-                endpointSummary[endpoint].queryParams[param] = log.request_count;
+                endpointSummary[endpoint].queryParams[param] += log.request_count;
             })
         });
-
-
 
         // Convert dateSummary & endpointSummary objects to an array
         const dateSummaries: ApiDateAggregate[] = Object.values(dateSummary);
         const endpointSummaries: ApiEndpointAggregate[] = Object.values(endpointSummary);
-
-        console.log("End point summaries", endpointSummaries)
 
         // Return both arrays in an array for front end visualisation //
         const apiLogSummaries = [dateSummaries, endpointSummaries];
