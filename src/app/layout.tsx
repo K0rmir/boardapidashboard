@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Chakra_Petch } from "next/font/google";
 import "./globals.css";
 import { PrimeReactProvider } from 'primereact/api';
 
 const inter = Inter({ subsets: ["latin"] });
+
+const chakra = Chakra_Petch({ subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  style: ["normal", "italic"] });
 
 export const metadata: Metadata = {
   title: "boardapi dashboard",
@@ -18,7 +23,7 @@ export default function RootLayout({
   return (
     <PrimeReactProvider>
       <html lang="en">
-        <body className={inter.className}>{children}</body>
+        <body className={chakra.className}>{children}</body>
       </html>
     </PrimeReactProvider>
   );

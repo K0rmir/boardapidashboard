@@ -15,12 +15,10 @@ import {
   Title,
   Tooltip,
   Legend,
-
+  scales,
 } from 'chart.js';
 import { Bar} from "react-chartjs-2";
-import { Button } from 'primereact/button';
-import data from "@/pages/api/data";
-        
+import { Button } from 'primereact/button';        
 
 ChartJS.register(
   CategoryScale,
@@ -178,11 +176,6 @@ async function getData(dateRange: string[]) {
           },
       },
       },
-      title: {
-        display: true,
-        // text: 'Total Requests & Errors',
-        color: 'white',
-      },
     },
   };
 
@@ -207,7 +200,7 @@ async function getData(dateRange: string[]) {
     <Button raised rounded onClick={() => handleDateChange("30d")} className={`dateBtn ${dateSelector === "30d" ? "selected" : ""}`}>30d</Button>
 
   </Card>
-  <div className="item2">boardapi dashboard</div>
+  <div className="item2"><span className="titleSpan">boardapi</span> dashboard</div>
 
   <div className="row2">
     <Card title="Total Requests" className="primaryStat item3">
@@ -230,7 +223,7 @@ async function getData(dateRange: string[]) {
     </Card>
     <Card className="item7" id="chartTitle">
       <p>Endpoint Usage</p>
-      <DataTable value={endpointDataTable} expandedRows={expandedRows} onRowToggle={(e) => setExpandedRows(e.data)} rowExpansionTemplate={rowExpansionTemplate} dataKey="endpoint" tableStyle={{ minWidth: '50rem' }}>
+      <DataTable value={endpointDataTable} expandedRows={expandedRows} onRowToggle={(e) => setExpandedRows(e.data)} rowExpansionTemplate={rowExpansionTemplate} dataKey="endpoint" tableStyle={{ minWidth: '50rem' }} scrollable scrollHeight="500px">
         <Column expander={true} style={{ width: '3em' }} />
         <Column field="endpoint" header="Endpoint"></Column>
         <Column field="totalRequestCount" header="Total Requests"></Column>

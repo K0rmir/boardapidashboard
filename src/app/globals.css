@@ -2,6 +2,11 @@
     box-sizing: border-box;
 }
 
+.titleSpan {
+    font-family: inherit;
+    color: #CAC068;
+}
+
 .container {
     display: grid;
     grid-template-columns: 25% 75%;
@@ -78,6 +83,7 @@
     display: flex;
     justify-content: center;
     font-size: 1.75rem;
+    margin-bottom: 5px;
 }
 
 /* Styles for Calendar Component */
@@ -87,13 +93,30 @@
     color: black;
 }
 
-.p-datepicker-today {
-    color: green;
+.p-datepicker-today span {
+    color: #CAC068
 }
 
 .p-datepicker-trigger {
     color: black;
     background-color: #CAC068;
+}
+
+.p-datepicker-trigger .p-button-icon-only:focus {
+    border: 1px solid #CAC068;
+
+}
+
+.p-datepicker-month:hover {
+    color: #CAC068;
+}
+
+.p-datepicker-year:hover {
+    color: #CAC068;
+}
+
+.p-button:focus {
+    box-shadow: 0 0 0 1px #CAC068;
 }
 
 .p-calendar:not(.p-calendar-disabled).p-focus>.p-inputtext {
@@ -123,6 +146,20 @@
     background-color: #CAC068;
     border: 2px solid black;
     color: black;
+}
+
+/* Styles for Endpoint Datatable */
+
+.p-datatable .p-datatable-thead>tr>th {
+    background: grey;
+}
+
+.p-datatable-thead th:first-child {
+    border-radius: 5px 0px 0px 5px;
+}
+
+.p-datatable-thead th:last-child {
+    border-radius: 0px 5px 5px 0px;
 }
 
 /* Responsive adjustments */
