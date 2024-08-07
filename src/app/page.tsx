@@ -15,7 +15,6 @@ import {
   Title,
   Tooltip,
   Legend,
-  scales,
 } from 'chart.js';
 import { Bar} from "react-chartjs-2";
 import { Button } from 'primereact/button';        
@@ -152,15 +151,23 @@ async function getData(dateRange: string[]) {
 
     // Count total requests, errors & res time for stat cards // 
     function countLogs(data: ApiDateAggregate[]) {
+
+      console.log("Data =", data[0]);
       let requestCount: number = 0;
       let errorCount: number = 0;
+      let resTime: number = 0;
     
       for (const log of data) {
         requestCount = requestCount + log.totalRequestCount;
         errorCount = errorCount + log.totalErrorCount;
+        resTime = resTime + log.totalResponseTime;
       }
       setTotalRequests(requestCount);
       setTotalErrors(errorCount);
+      console.log("Restime =", resTime);
+      setAvgResTime(+(resTime / requestCount).toFixed(2)); // + here is 'unary plus operator' which attempts to convert its operand to a number if it isn't already //
+      console.log(avgResTime);
+      
     }
 
   // Options obj for chartjs bar chart //
@@ -210,7 +217,7 @@ async function getData(dateRange: string[]) {
       <p>{totalErrors}</p>
     </Card>
     <Card title="Avg Response Time" className="primaryStat item5">
-      <p>0</p>
+      <p>{avgResTime}ms</p>
     </Card>
   </div>
 

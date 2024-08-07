@@ -1,7 +1,7 @@
 // Define structure of each entry in the db response //
 interface ApiLogAggregate {
     api_key: string;
-    avg_response_time_ms: number;
+    total_response_time_ms: number;
     date: string | Date;
     endpoint: string;
     error_count: number;
@@ -19,6 +19,7 @@ interface ApiDateAggregate {
     date: string;
     totalRequestCount: number;
     totalErrorCount: number;
+    totalResponseTime: number;
 }
 
 // Define the structure of dates when collated //
