@@ -106,12 +106,12 @@ useEffect(() => {
 // DB call with date range as parameter //
 async function getData(dateRange: string[]) {
   try {
-    const response = await fetch('/api/data', {
-      method: 'POST',
+    const queryString = `startDate=${dateRange[0]}&endDate=${dateRange[1]}`;
+    const response = await fetch(`/api/data?${queryString}`, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ dateRange })
     });
 
     const data = await response.json();

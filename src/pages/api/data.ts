@@ -4,11 +4,11 @@ import { ApiDateAggregate, ApiLogAggregate, ApiEndpointAggregate } from '@/lib/i
 
 export default async function data(req: NextApiRequest, res: NextApiResponse) {
 
-  if (req.method !== 'POST') {
+  if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method Not Allowed' })
   }
 
-  const { dateRange } = req.body;
+  const dateRange = [req.query.startDate, req.query.endDate]
 
   try {
     const data = await db.query(`SELECT * FROM api_usage_aggregate WHERE date BETWEEN $1 AND $2`, [dateRange[0], dateRange[1]]);
