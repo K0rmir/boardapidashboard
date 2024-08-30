@@ -17,7 +17,14 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar} from "react-chartjs-2";
-import { Button } from 'primereact/button';        
+import { Button } from 'primereact/button';  
+import React, { useRef } from 'react';
+import { SpeedDial } from 'primereact/speeddial';
+import { Toast } from 'primereact/toast';
+import { MenuItem } from 'primereact/menuitem';  
+// import { Tooltip } from 'primereact/tooltip'; 
+import 'primeicons/primeicons.css';
+
 
 ChartJS.register(
   CategoryScale,
@@ -95,6 +102,19 @@ function handleDateChange(preselectedDate: string) {
   }
 };
 
+// Action menu //
+const toast = useRef<Toast>(null);
+const items: MenuItem[] = [
+  {
+    label: 'Export',
+    icon: 'pi pi-file-export',
+    command: () => {
+      toast.current?.show({severity: 'info', summary: 'Export', detail: 'Data Exported'});
+    }
+  },
+];
+
+
 // Anytime date is updated, call api to call db //
 useEffect(() => {
   if (dateRange[0] && dateRange[1]) { // Ensure two dates are selected //
@@ -152,7 +172,7 @@ async function getData(dateRange: string[]) {
     // Count total requests, errors & res time for stat cards // 
     function countLogs(data: ApiDateAggregate[]) {
 
-      console.log("Data =", data[0]);
+      // console.log("Data =", data[0]);
       let requestCount: number = 0;
       let errorCount: number = 0;
       let resTime: number = 0;
@@ -164,9 +184,7 @@ async function getData(dateRange: string[]) {
       }
       setTotalRequests(requestCount);
       setTotalErrors(errorCount);
-      console.log("Restime =", resTime);
       setAvgResTime(+(resTime / requestCount).toFixed(2)); // + here is 'unary plus operator' which attempts to convert its operand to a number if it isn't already //
-      console.log(avgResTime);
       
     }
 
@@ -200,35 +218,40 @@ async function getData(dateRange: string[]) {
 
   return (
 <div className="container">
-  <Card className="primaryStat item1">
+  <Card className="datePicker item1">
     <Calendar value={dateRange} onChange={(e) => setDateRange(e.value as Date[])} showIcon dateFormat="dd/mm/yy" selectionMode="range" readOnlyInput hideOnRangeSelection variant="filled" maxDate={maxDate} />
     <Button raised rounded onClick={() => handleDateChange("7d")} className={`dateBtn ${dateSelector === "7d" ? "selected" : ""}`}>7d</Button>
     <Button raised rounded onClick={() => handleDateChange("14d")} className={`dateBtn ${dateSelector === "14d" ? "selected" : ""}`}>14d</Button>
     <Button raised rounded onClick={() => handleDateChange("30d")} className={`dateBtn ${dateSelector === "30d" ? "selected" : ""}`}>30d</Button>
-
   </Card>
-  <div className="item2"><span className="titleSpan">boardapi</span> dashboard</div>
+  <div className="dashboardTitle item2"><span className="titleSpan">boardapi</span> dashboard</div>
+
+  <div className="item3" >
+    <Toast ref={toast} />
+    {/* <Tooltip target=".speeddial-right .p-speeddial-action" position="left" /> */}
+    <SpeedDial model={items} direction="left" style={{ top: 'calc(30% - 2rem)', position: 'relative',}} />
+  </div>
 
   <div className="row2">
-    <Card title="Total Requests" className="primaryStat item3">
+    <Card title="Total Requests" className="primaryStat item4">
       <p>{totalRequests}</p>
     </Card>
-    <Card title="Total Errors" className="primaryStat item4">
+    <Card title="Total Errors" className="primaryStat item5">
       <p>{totalErrors}</p>
     </Card>
-    <Card title="Avg Response Time" className="primaryStat item5">
+    <Card title="Avg Response Time" className="primaryStat item6">
       <p>{avgResTime}ms</p>
     </Card>
   </div>
 
   <div className="row3">
-    <Card className="item6" id="chartTitle">
+    <Card className="item7" id="chartTitle">
       <p>Total Requests & Errors By Day</p>
       {dailyChartData && (
         <Bar className="requestsErrorsChart" data={dailyChartData} options={options} />
       )}
     </Card>
-    <Card className="item7" id="chartTitle">
+    <Card className="item8" id="chartTitle">
       <p>Endpoint Usage</p>
       <DataTable value={endpointDataTable} expandedRows={expandedRows} onRowToggle={(e) => setExpandedRows(e.data)} rowExpansionTemplate={rowExpansionTemplate} dataKey="endpoint" tableStyle={{ minWidth: '50rem' }} scrollable scrollHeight="500px">
         <Column expander={true} style={{ width: '3em' }} />
