@@ -18,13 +18,12 @@ import {
 } from 'chart.js';
 import { Bar} from "react-chartjs-2";
 import { Button } from 'primereact/button';  
-import React, { useRef } from 'react';
+import React from 'react';
 import { SpeedDial } from 'primereact/speeddial';
-import { Toast } from 'primereact/toast';
 import { MenuItem } from 'primereact/menuitem';  
 // import { Tooltip } from 'primereact/tooltip'; 
 import 'primeicons/primeicons.css';
-
+import { CSVLink } from "react-csv";
 
 ChartJS.register(
   CategoryScale,
@@ -80,7 +79,9 @@ const [avgResTime, setAvgResTime] = useState<number>(0);
 const [dailyChartData, setDailyChartData] = useState<ChartData>();
 const [endpointDataTable, setEndpointDataTable] = useState<ApiEndpointAggregate[]>();
 const [dateSelector, setDateSelector] = useState<string>("7d");
-
+// State for CSV export //
+const [dailyUsageExport, setDailyUseageExport] = useState<ApiDateAggregate | any>();
+// const [dailyEndpointUsageExport, setDailyEndpointUseageExport] = useState<ApiEndpointAggregate>();
 // State for expanded rows //
 const [expandedRows, setExpandedRows] = useState<DataTableExpandedRows | DataTableValueArray | undefined>(undefined);
 
@@ -102,18 +103,33 @@ function handleDateChange(preselectedDate: string) {
   }
 };
 
-// Action menu //
-const toast = useRef<Toast>(null);
-const items: MenuItem[] = [
-  {
-    label: 'Export',
-    icon: 'pi pi-file-export',
-    command: () => {
-      toast.current?.show({severity: 'info', summary: 'Export', detail: 'Data Exported'});
-    }
-  },
+const headers = [
+  {label: 'Date', key: 'date'},
+  {label: 'Request Count', key: 'totalRequestCount'},
+  {label: 'Error Count', key: 'totalErrorCount'},
+  {label: 'Response Time', key: 'totalResponseTime'},
 ];
 
+const csvReport = {
+  filename: 'boardapireport',
+  headers: headers,
+  data: dailyUsageExport,
+};
+
+// Action menu & CSV Export //
+const items: MenuItem[] = [
+  {
+    template: (item: any) => {
+      return (
+        <>
+        <CSVLink {...csvReport} >
+          <span className="pi pi-download exportBtn" />
+        </CSVLink>
+        </>
+      );
+    },
+  },
+];
 
 // Anytime date is updated, call api to call db //
 useEffect(() => {
@@ -162,6 +178,7 @@ async function getData(dateRange: string[]) {
 
     setDailyChartData(dailyChartDataSets);
     setEndpointDataTable(data[1]);
+    setDailyUseageExport(data[0]);
 
   } catch (error) {
       console.error(error);
@@ -172,7 +189,6 @@ async function getData(dateRange: string[]) {
     // Count total requests, errors & res time for stat cards // 
     function countLogs(data: ApiDateAggregate[]) {
 
-      // console.log("Data =", data[0]);
       let requestCount: number = 0;
       let errorCount: number = 0;
       let resTime: number = 0;
@@ -227,7 +243,6 @@ async function getData(dateRange: string[]) {
   <div className="dashboardTitle item2"><span className="titleSpan">boardapi</span> dashboard</div>
 
   <div className="item3" >
-    <Toast ref={toast} />
     {/* <Tooltip target=".speeddial-right .p-speeddial-action" position="left" /> */}
     <SpeedDial model={items} direction="left" style={{ top: 'calc(30% - 2rem)', position: 'relative',}} />
   </div>
@@ -262,7 +277,5 @@ async function getData(dateRange: string[]) {
     </Card>
   </div>
 </div>
-
-
   )
 }

@@ -58,16 +58,17 @@
     color: black;
 }
 
-.p-speeddial-item a {
-    border: 1px solid white;
-}
-
-.p-speeddial-action {
+.exportBtn {
     background-color: #CAC068;
-}
-
-.p-speeddial-action-icon {
     color: black;
+    border: 1px solid white;
+    align-content: center;
+    height: 3rem;
+    width: 3rem;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    padding-left: .8rem;
+    font-size: 1.25rem;
 }
 
 .item4 {

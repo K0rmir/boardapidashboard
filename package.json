@@ -19,12 +19,14 @@
     "primereact": "^10.7.0",
     "react": "^18",
     "react-chartjs-2": "^5.2.0",
+    "react-csv": "^2.2.2",
     "react-dom": "^18"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/pg": "^8.11.6",
     "@types/react": "^18",
+    "@types/react-csv": "^1.1.10",
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
