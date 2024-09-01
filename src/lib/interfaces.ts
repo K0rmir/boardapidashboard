@@ -51,6 +51,9 @@ interface DataContextState {
     maxDate: Date;
     handleDateChange: (preselectedDate: string) => void;
     dateSelector: string;
+    totalRequests: number;
+    totalErrors: number;
+    avgResTime: number;
 }
 
 export const defaultDataContextState: DataContextState = {
@@ -58,7 +61,10 @@ export const defaultDataContextState: DataContextState = {
     setDateRange: () => { },
     maxDate: new Date(),
     handleDateChange: () => [],
-    dateSelector: ""
+    dateSelector: "",
+    totalRequests: 0,
+    totalErrors: 0,
+    avgResTime: 0,
 }
 
 export type {

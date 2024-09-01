@@ -146,7 +146,10 @@ async function getData(dateRange: string[]) {
           setDateRange,
           maxDate,
           handleDateChange,
-          dateSelector
+          dateSelector,
+          totalRequests,
+          totalErrors,
+          avgResTime
         }}>
             {children}
         </DataContext.Provider>

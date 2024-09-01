@@ -16,13 +16,14 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar} from "react-chartjs-2";
-import React from 'react';
+// import React from 'react';
 import { SpeedDial } from 'primereact/speeddial';
 import { MenuItem } from 'primereact/menuitem';  
 // import { Tooltip } from 'primereact/tooltip'; 
 import 'primeicons/primeicons.css';
 import { CSVLink } from "react-csv";
 import DatePicker from "@/components/DatePicker"
+import DataCards from "@/components/DataCards"
 
 ChartJS.register(
   CategoryScale,
@@ -36,9 +37,6 @@ ChartJS.register(
 export default function App() {
 
 // State variables for stat cards //
-const [totalRequests, setTotalRequests] = useState<number>(0);
-const [totalErrors, setTotalErrors] = useState<number>(0);
-const [avgResTime, setAvgResTime] = useState<number>(0);
 const [dailyChartData, setDailyChartData] = useState<ChartData>();
 const [endpointDataTable, setEndpointDataTable] = useState<ApiEndpointAggregate[]>();
 // State for CSV export //
@@ -112,17 +110,7 @@ const items: MenuItem[] = [
     <SpeedDial model={items} direction="left" style={{ top: 'calc(30% - 2rem)', position: 'relative',}} />
   </div>
 
-  <div className="row2">
-    <Card title="Total Requests" className="primaryStat item4">
-      <p>{totalRequests}</p>
-    </Card>
-    <Card title="Total Errors" className="primaryStat item5">
-      <p>{totalErrors}</p>
-    </Card>
-    <Card title="Avg Response Time" className="primaryStat item6">
-      <p>{avgResTime}ms</p>
-    </Card>
-  </div>
+  <DataCards/>
 
   <div className="row3">
     <Card className="item7" id="chartTitle">
