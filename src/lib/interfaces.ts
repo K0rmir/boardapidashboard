@@ -1,3 +1,6 @@
+import { Dispatch, SetStateAction } from "react";
+import { Data } from "react-csv/lib/core";
+
 // Define structure of each entry in the db response //
 interface ApiLogAggregate {
     api_key: string;
@@ -42,9 +45,26 @@ interface ChartData {
     }[];
 }
 
+interface DataContextState {
+    dateRange: Date[];
+    setDateRange: Dispatch<SetStateAction<Date[]>>;
+    maxDate: Date;
+    handleDateChange: (preselectedDate: string) => void;
+    dateSelector: string;
+}
+
+export const defaultDataContextState: DataContextState = {
+    dateRange: [],
+    setDateRange: () => { },
+    maxDate: new Date(),
+    handleDateChange: () => [],
+    dateSelector: ""
+}
+
 export type {
     ApiLogAggregate,
     ApiDateAggregate,
     ApiEndpointAggregate,
-    ChartData
+    ChartData,
+    DataContextState,
 }
