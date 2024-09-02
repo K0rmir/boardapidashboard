@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction } from "react";
-import { Data } from "react-csv/lib/core";
 
 // Define structure of each entry in the db response //
 interface ApiLogAggregate {
@@ -54,6 +53,7 @@ interface DataContextState {
     totalRequests: number;
     totalErrors: number;
     avgResTime: number;
+    dailyUsageExport: []
 }
 
 export const defaultDataContextState: DataContextState = {
@@ -65,6 +65,7 @@ export const defaultDataContextState: DataContextState = {
     totalRequests: 0,
     totalErrors: 0,
     avgResTime: 0,
+    dailyUsageExport: []
 }
 
 export type {

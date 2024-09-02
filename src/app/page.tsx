@@ -1,6 +1,6 @@
 "use client"
 
-import "primereact/resources/themes/arya-purple/theme.css";
+import "primereact/resources/themes/arya-purple/theme.css"
 import { ApiDateAggregate, ChartData, ApiEndpointAggregate} from '@/lib/interfaces';
 import { Card } from 'primereact/card'; 
 import { useState } from "react";
@@ -17,13 +17,10 @@ import {
 } from 'chart.js';
 import { Bar} from "react-chartjs-2";
 // import React from 'react';
-import { SpeedDial } from 'primereact/speeddial';
-import { MenuItem } from 'primereact/menuitem';  
-// import { Tooltip } from 'primereact/tooltip'; 
 import 'primeicons/primeicons.css';
-import { CSVLink } from "react-csv";
-import DatePicker from "@/components/DatePicker"
-import DataCards from "@/components/DataCards"
+import DatePicker from "@/components/DatePicker";
+import DataCards from "@/components/DataCards";
+import ActionMenu from "@/components/ActionMenu";
 
 ChartJS.register(
   CategoryScale,
@@ -43,34 +40,6 @@ const [endpointDataTable, setEndpointDataTable] = useState<ApiEndpointAggregate[
 const [dailyUsageExport, setDailyUseageExport] = useState<ApiDateAggregate | any>();
 // State for expanded rows //
 const [expandedRows, setExpandedRows] = useState<DataTableExpandedRows | DataTableValueArray | undefined>(undefined);
-
-const headers = [
-  {label: 'Date', key: 'date'},
-  {label: 'Request Count', key: 'totalRequestCount'},
-  {label: 'Error Count', key: 'totalErrorCount'},
-  {label: 'Response Time', key: 'totalResponseTime'},
-];
-
-const csvReport = {
-  filename: 'boardapireport',
-  headers: headers,
-  data: dailyUsageExport,
-};
-
-// Action menu & CSV Export //
-const items: MenuItem[] = [
-  {
-    // template: (item: any) => {
-    //   return (
-    //     <>
-    //     <CSVLink {...csvReport} >
-    //       <span className="pi pi-download exportBtn" />
-    //     </CSVLink>
-    //     </>
-    //   );
-    // },
-  },
-];
 
   // Options obj for chartjs bar chart //
    const options = {
@@ -105,12 +74,9 @@ const items: MenuItem[] = [
   <DatePicker/>
   <div className="dashboardTitle item2"><span className="titleSpan">boardapi</span> dashboard</div>
 
-  <div className="item3" >
-    {/* <Tooltip target=".speeddial-right .p-speeddial-action" position="left" /> */}
-    <SpeedDial model={items} direction="left" style={{ top: 'calc(30% - 2rem)', position: 'relative',}} />
-  </div>
+<ActionMenu/>
 
-  <DataCards/>
+<DataCards/>
 
   <div className="row3">
     <Card className="item7" id="chartTitle">

@@ -49,6 +49,7 @@ const [endpointDataTable, setEndpointDataTable] = useState<ApiEndpointAggregate[
 const [totalRequests, setTotalRequests] = useState<number>(0);
 const [totalErrors, setTotalErrors] = useState<number>(0);
 const [avgResTime, setAvgResTime] = useState<number>(0);
+const [dailyUsageExport, setDailyUseageExport] = useState<ApiDateAggregate | any>(); // needs to be worked on to get rid of type any
 
 useEffect(() => {
     if (dateRange[0] && dateRange[1]) { // Ensure two dates are selected //
@@ -114,7 +115,7 @@ async function getData(dateRange: string[]) {
 
     setDailyChartData(dailyChartDataSets);
     setEndpointDataTable(data[1]);
-    // setDailyUseageExport(data[0]);
+    setDailyUseageExport(data[0]);
 
   } catch (error) {
       console.error(error);
@@ -149,7 +150,8 @@ async function getData(dateRange: string[]) {
           dateSelector,
           totalRequests,
           totalErrors,
-          avgResTime
+          avgResTime,
+          dailyUsageExport
         }}>
             {children}
         </DataContext.Provider>

@@ -8,10 +8,6 @@ export default function DatePicker() {
 
   const { dateRange, setDateRange, maxDate, handleDateChange, dateSelector } = useDataContext();
 
-  console.log("Date Range = ", dateRange);
-  console.log("Date Selector = ", dateSelector);
-
-
   return (
     <Card className="datePicker item1">
       <Calendar value={dateRange} onChange={(e) => setDateRange(e.value as Date[])} showIcon dateFormat="dd/mm/yy" selectionMode="range" readOnlyInput hideOnRangeSelection variant="filled" maxDate={maxDate} />
