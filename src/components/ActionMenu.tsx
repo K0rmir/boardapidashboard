@@ -13,16 +13,16 @@ const { dailyUsageExport } = useDataContext();
 const items: MenuItem[] = [
     {
       label: 'Export',
-      template: (item: any) => {
-        return (
-          <>
-          <Tooltip target=".exportBtn" content="Export to CSV" position="left" appendTo={() => document.body}  />
-          <CSVLink {...csvReport} >
-            <span className="pi pi-download exportBtn"/>
-          </CSVLink>
-          </>
-        );
-      },
+      // template: (item: any) => {
+      //   return (
+      //     <>
+      //     <Tooltip target=".exportBtn" content="Export to CSV" position="left" appendTo={() => document.body}  />
+      //     <CSVLink {...csvReport} >
+      //       <span className="pi pi-download exportBtn"/>
+      //     </CSVLink>
+      //     </>
+      //   );
+      // },
     },
   ];
 
