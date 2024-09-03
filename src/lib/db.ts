@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const dbConnectionString = process.env.supabaseUrl;
+const dbConnectionString = process.env.DATABASE_URL;
 
 if (!dbConnectionString) {
     throw new Error("DATABASE_URL is not set in the environment variables"); // Throw error if no connection string is provided for database.
