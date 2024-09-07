@@ -55,6 +55,7 @@ interface DataContextState {
   avgResTime: number;
   dailyUsageExport: [];
   dailyChartData: ChartData | undefined;
+  endpointTableData: ApiEndpointAggregate[] | undefined;
 }
 
 export const defaultDataContextState: DataContextState = {
@@ -76,7 +77,13 @@ export const defaultDataContextState: DataContextState = {
       backgroundColor: "",
       barThickness: 0
     }],
-  }
+  },
+  endpointTableData: [{
+    endpoint: "",
+    totalRequestCount: 0,
+    totalErrorCount: 0,
+    queryParams: {}
+  }],
 }
 
 export type {

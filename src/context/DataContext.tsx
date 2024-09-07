@@ -45,11 +45,12 @@ return `${year}-${month}-${day}`;
 const [dateRange, setDateRange] = useState<Date[]>(sevenDaysAgo());
 const [dateSelector, setDateSelector] = useState<string>("7d");
 const [dailyChartData, setDailyChartData] = useState<ChartData>();
-const [endpointDataTable, setEndpointDataTable] = useState<ApiEndpointAggregate[]>();
+const [endpointTableData, setEndpointTableData] = useState<ApiEndpointAggregate[]>();
 const [totalRequests, setTotalRequests] = useState<number>(0);
 const [totalErrors, setTotalErrors] = useState<number>(0);
 const [avgResTime, setAvgResTime] = useState<number>(0);
 const [dailyUsageExport, setDailyUseageExport] = useState<ApiDateAggregate | any>(); // needs to be worked on to get rid of type any
+
 
 
 useEffect(() => {
@@ -115,7 +116,7 @@ async function getData(dateRange: string[]) {
     };
 
     setDailyChartData(dailyChartDataSets);
-    setEndpointDataTable(data[1]);
+    setEndpointTableData(data[1]);
     setDailyUseageExport(data[0]);
 
   } catch (error) {
@@ -141,7 +142,6 @@ async function getData(dateRange: string[]) {
     setAvgResTime(+(resTime / requestCount).toFixed(2)); // + here is 'unary plus operator' which attempts to convert its operand to a number if it isn't already //
   }
 
-
     return (
         <DataContext.Provider value={{
           dateRange,
@@ -153,7 +153,8 @@ async function getData(dateRange: string[]) {
           totalErrors,
           avgResTime,
           dailyUsageExport,
-          dailyChartData
+          dailyChartData,
+          endpointTableData,
         }}>
             {children}
         </DataContext.Provider>
