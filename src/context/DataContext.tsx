@@ -51,8 +51,6 @@ const [totalErrors, setTotalErrors] = useState<number>(0);
 const [avgResTime, setAvgResTime] = useState<number>(0);
 const [dailyUsageExport, setDailyUseageExport] = useState<ApiDateAggregate | any>(); // needs to be worked on to get rid of type any
 
-
-
 useEffect(() => {
     if (dateRange[0] && dateRange[1]) { // Ensure two dates are selected //
       const formattedDateRange = dateRange.map(date => formatDate(date));

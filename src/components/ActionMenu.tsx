@@ -9,36 +9,34 @@ export default function ActionMenu() {
 
 const { dailyUsageExport } = useDataContext();
 
-    // Action menu //
+// CSV Export // 
+const headers = [
+  {label: 'Date', key: 'date'},
+  {label: 'Request Count', key: 'totalRequestCount'},
+  {label: 'Error Count', key: 'totalErrorCount'},
+  {label: 'Response Time', key: 'totalResponseTime'},
+];
+
+function setCsvData() {
+  return dailyUsageExport || [];
+}
+
+// Action menu //
 const items: MenuItem[] = [
     {
       label: 'Export',
-      // template: (item: any) => {
-      //   return (
-      //     <>
-      //     <Tooltip target=".exportBtn" content="Export to CSV" position="left" appendTo={() => document.body}  />
-      //     <CSVLink {...csvReport} >
-      //       <span className="pi pi-download exportBtn"/>
-      //     </CSVLink>
-      //     </>
-      //   );
-      // },
+      template: (item: any) => {
+        return (
+          <>
+          <Tooltip target=".exportBtn" content="Export to CSV" position="left" appendTo={() => document.body}  />
+          <CSVLink data={setCsvData()} headers={headers} filename='boardapireport'>
+            <span className="pi pi-download exportBtn"/>
+          </CSVLink>
+          </>
+        );
+      },
     },
   ];
-
-// CSV Export // 
-const headers = [
-    {label: 'Date', key: 'date'},
-    {label: 'Request Count', key: 'totalRequestCount'},
-    {label: 'Error Count', key: 'totalErrorCount'},
-    {label: 'Response Time', key: 'totalResponseTime'},
-  ];
-  
-  const csvReport = {
-    filename: 'boardapireport',
-    headers: headers,
-    data: dailyUsageExport,
-  };
 
   return (
     <>
