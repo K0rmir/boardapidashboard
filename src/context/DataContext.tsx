@@ -1,7 +1,7 @@
 "use client"
 
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { ApiDateAggregate, ChartData, ApiEndpointAggregate, DataContextState, defaultDataContextState} from '@/lib/interfaces';
+import { ApiDateAggregate, ChartData, ApiEndpointAggregate, DataContextState, defaultDataContextState, DailyUsageExport} from '@/lib/interfaces';
 
 const DataContext = createContext<DataContextState>(defaultDataContextState);
 
@@ -50,6 +50,7 @@ const [totalRequests, setTotalRequests] = useState<number>(0);
 const [totalErrors, setTotalErrors] = useState<number>(0);
 const [avgResTime, setAvgResTime] = useState<number>(0);
 const [dailyUsageExport, setDailyUseageExport] = useState<ApiDateAggregate | any>(); // needs to be worked on to get rid of type any
+const [dailyEndpointExport, setDailyEndpointExport] = useState<ApiEndpointAggregate | any>(); // <-- no longer needed
 
 useEffect(() => {
     if (dateRange[0] && dateRange[1]) { // Ensure two dates are selected //
@@ -89,6 +90,9 @@ async function getData(dateRange: string[]) {
 
     const data = await response.json();
 
+    console.log("This is data [0]", data[0]);
+    console.log("This is data [1]", data[1]);
+
     // Call function to populate stat cards //
     countLogs(data[0]);
 
@@ -99,14 +103,14 @@ async function getData(dateRange: string[]) {
         {
           label: "Total Requests",
           borderRadius: 30,
-          data: data[0].map((log: ApiDateAggregate) => log.totalRequestCount), // Generate array of requests per day 
+          data: data[0].map((log: ApiDateAggregate) => log.dailyTotalRequestCount), // Generate array of requests per day 
           backgroundColor: "#CAC068",
           barThickness: 10,
         },
         {
           label: "Total Errors",
           borderRadius: 20,
-          data: data[0].map((log: ApiDateAggregate) => log.totalErrorCount), // Generate array of errors per day
+          data: data[0].map((log: ApiDateAggregate) => log.dailyTotalErrorCount), // Generate array of errors per day
           backgroundColor: "#FF649D",
           barThickness: 10,
         },
@@ -116,6 +120,7 @@ async function getData(dateRange: string[]) {
     setDailyChartData(dailyChartDataSets);
     setEndpointTableData(data[1]);
     setDailyUseageExport(data[0]);
+    // setDailyEndpointExport(data[1]);
 
   } catch (error) {
       console.error(error);
@@ -131,9 +136,9 @@ async function getData(dateRange: string[]) {
     let resTime: number = 0;
     
     for (const log of data) {
-      requestCount = requestCount + log.totalRequestCount;
-      errorCount = errorCount + log.totalErrorCount;
-      resTime = resTime + log.totalResponseTime;
+      requestCount = requestCount + log.dailyTotalRequestCount;
+      errorCount = errorCount + log.dailyTotalErrorCount;
+      resTime = resTime + log.dailyTotalResponseTime;
     }
     setTotalRequests(requestCount);
     setTotalErrors(errorCount);
@@ -151,6 +156,7 @@ async function getData(dateRange: string[]) {
           totalErrors,
           avgResTime,
           dailyUsageExport,
+          dailyEndpointExport,
           dailyChartData,
           endpointTableData,
         }}>

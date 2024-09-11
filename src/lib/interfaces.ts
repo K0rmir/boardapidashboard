@@ -19,16 +19,16 @@ interface QueryParamCount {
 // Define the structure of dates when collated //
 interface ApiDateAggregate {
   date: string;
-  totalRequestCount: number;
-  totalErrorCount: number;
-  totalResponseTime: number;
+  dailyTotalRequestCount: number;
+  dailyTotalErrorCount: number;
+  dailyTotalResponseTime: number;
 }
 
 // Define the structure of dates when collated //
 interface ApiEndpointAggregate {
   endpoint: string;
-  totalRequestCount: number;
-  totalErrorCount: number;
+  endpointTotalRequestCount: number;
+  endpointTotalErrorCount: number;
   queryParams: QueryParamCount;
 }
 
@@ -44,6 +44,21 @@ interface ChartData {
   }[];
 }
 
+interface DailyUsageExport {
+  dailyUsage: {
+    date: string;
+    totalRequestCount: number;
+    totalErrorCount: number;
+    totalResponseTime: number;
+  }
+  endpoints: {
+    endpoint: string;
+    totalRequestCount: number;
+    totalErrorCount: number;
+    queryParams: QueryParamCount;
+  }
+}
+
 interface DataContextState {
   dateRange: Date[];
   setDateRange: Dispatch<SetStateAction<Date[]>>;
@@ -53,7 +68,8 @@ interface DataContextState {
   totalRequests: number;
   totalErrors: number;
   avgResTime: number;
-  dailyUsageExport: [];
+  dailyUsageExport: ApiDateAggregate;
+  dailyEndpointExport: ApiEndpointAggregate;
   dailyChartData: ChartData | undefined;
   endpointTableData: ApiEndpointAggregate[] | undefined;
 }
@@ -67,7 +83,20 @@ export const defaultDataContextState: DataContextState = {
   totalRequests: 0,
   totalErrors: 0,
   avgResTime: 0,
-  dailyUsageExport: [],
+  dailyUsageExport: {
+    date: "",
+    dailyTotalRequestCount: 0,
+    dailyTotalErrorCount: 0,
+    dailyTotalResponseTime: 0
+  },
+  dailyEndpointExport: {
+    endpoint: "",
+    endpointTotalRequestCount: 0,
+    endpointTotalErrorCount: 0,
+    queryParams: {
+      "": 0,
+    }
+  },
   dailyChartData: {
     labels: [],
     datasets: [{
@@ -80,8 +109,8 @@ export const defaultDataContextState: DataContextState = {
   },
   endpointTableData: [{
     endpoint: "",
-    totalRequestCount: 0,
-    totalErrorCount: 0,
+    endpointTotalRequestCount: 0,
+    endpointTotalErrorCount: 0,
     queryParams: {}
   }],
 }
@@ -92,4 +121,24 @@ export type {
   ApiEndpointAggregate,
   ChartData,
   DataContextState,
+  DailyUsageExport
 }
+
+
+
+// dailyUsageExport: {
+//   dailyUsage: {
+//     date: "",
+//     totalRequestCount: 0,
+//     totalErrorCount: 0,
+//     totalResponseTime: 0
+//   },
+//   endpoints: {
+//     endpoint: "",
+//     totalRequestCount: 0,
+//     totalErrorCount: 0,
+//     queryParams: {
+//       "": 0
+//     }
+//   }
+// },

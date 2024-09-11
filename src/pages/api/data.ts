@@ -24,14 +24,14 @@ export default async function data(req: NextApiRequest, res: NextApiResponse) {
       if (!dateSummary[date]) {
         dateSummary[date] = {
           date: date,
-          totalRequestCount: 0,
-          totalErrorCount: 0,
-          totalResponseTime: 0
+          dailyTotalRequestCount: 0,
+          dailyTotalErrorCount: 0,
+          dailyTotalResponseTime: 0
         };
       }
-      dateSummary[date].totalRequestCount += log.request_count;
-      dateSummary[date].totalErrorCount += log.error_count;
-      dateSummary[date].totalResponseTime += log.total_response_time_ms;
+      dateSummary[date].dailyTotalRequestCount += log.request_count;
+      dateSummary[date].dailyTotalErrorCount += log.error_count;
+      dateSummary[date].dailyTotalResponseTime += log.total_response_time_ms;
     });
 
     // Initialize empty object to keep track of each endpoint summary // 
@@ -45,14 +45,14 @@ export default async function data(req: NextApiRequest, res: NextApiResponse) {
       if (!endpointSummary[endpoint]) {
         endpointSummary[endpoint] = {
           endpoint: endpoint,
-          totalRequestCount: 0,
-          totalErrorCount: 0,
+          endpointTotalRequestCount: 0,
+          endpointTotalErrorCount: 0,
           queryParams: {}
         };
       }
 
-      endpointSummary[endpoint].totalRequestCount += log.request_count;
-      endpointSummary[endpoint].totalErrorCount += log.error_count;
+      endpointSummary[endpoint].endpointTotalRequestCount += log.request_count;
+      endpointSummary[endpoint].endpointTotalErrorCount += log.error_count;
 
       // Count each query param and how many times it was used //
       // Can take this a step further and also include error counts for each param used //

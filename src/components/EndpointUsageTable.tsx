@@ -29,8 +29,8 @@ export default function EndpointUsageTable() {
           <DataTable value={endpointTableData} expandedRows={expandedRows} onRowToggle={(e) => setExpandedRows(e.data)} rowExpansionTemplate={rowExpansionTemplate} dataKey="endpoint" tableStyle={{ minWidth: '50rem' }} scrollable scrollHeight="500px">
             <Column expander={true} style={{ width: '3em' }} />
             <Column field="endpoint" header="Endpoint"></Column>
-            <Column field="totalRequestCount" header="Total Requests"></Column>
-            <Column field="totalErrorCount" header="Total Errors"></Column>
+            <Column field="endpointTotalRequestCount" header="Total Requests"></Column>
+            <Column field="endpointTotalErrorCount" header="Total Errors"></Column>
           </DataTable>
         </Card>
       </>
